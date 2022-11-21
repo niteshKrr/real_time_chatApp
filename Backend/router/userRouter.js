@@ -1,8 +1,9 @@
 const express = require("express");
+const { ObjectId } = require("mongodb");
+const generateToken = require("../connection/generateToken");
 const router = new express.Router();
 const User = require("../models/userModel");
 require("dotenv").config();
-
 
 
 router.post("/register", async (req, res) => {
@@ -21,8 +22,10 @@ router.post("/register", async (req, res) => {
       const user = new User(req.body);
       user
         .save()
-        .then(() => {
-          res.status(201).send("user created successfully");
+        .then((result) => {
+          // generating jwt token
+          const token = generateToken(result);
+          res.status(201).send({ "message": "sign up success", "token" : token });
         })
         .catch((err) => {
           res.status(404).send(err);
@@ -40,7 +43,9 @@ router.post("/login", async (req, res) => {
     const userEmail = await User.findOne({ email});
 
     if (userEmail && (await userEmail.matchPassword(password))) {
-      res.send("logged in successfully");
+      console.log(userEmail._id);
+      const token = generateToken(userEmail);
+      res.status(201).send({ message: "login In success", token: token });
     } else {
       res.send("check your email or password");
     }
