@@ -8,7 +8,10 @@ const User = require("../models/userModel");
 
 
 router.use("/onetoone", userAuth);
-router.use("/group", userAuth);
+router.use("/creategroup", userAuth);
+router.use("/renamegroup", userAuth);
+router.use("/addusertogroup", userAuth);
+router.use("/removeuserfromgroup", userAuth);
 
 router.post("/onetoone", async(req, res) => {
 
@@ -140,7 +143,7 @@ router.post("/creategroup", async(req, res) => {
  // --------------------------------------------------------
 
 
-router.put("/grouprename", async(req, res) => {
+router.put("/renamegroup", async(req, res) => {
 
   const { chatId, chatName } = req.body;
 
@@ -165,7 +168,7 @@ router.put("/grouprename", async(req, res) => {
 
  // --------------------------------------------------------------
 
-router.put("/addusergroup", async(req, res) => { 
+router.put("/addusertogroup", async(req, res) => { 
   const { chatId, userId } = req.body;
 
   const addedToGroup = await Chat.findByIdAndUpdate(
